@@ -51,8 +51,38 @@ for w1r in w1routes:
         if point != None:
             intersects.append(point)
 
-print(intersects)
-
 # Manhattan distance
 distances = [abs(i[0]) + abs(i[1]) for i in intersects]
 print(min(distances)) # 248!!!
+
+# part 2
+# print(w1routes)
+def steps(route):
+    path = []
+    current = (0, 0)
+    for r in route:
+        if r[0] > 0:
+            path.extend([(current[0] + i, current[1]) for i in range(1, r[0]+1)])
+        elif r[0] < 0:
+            path.extend([(current[0] - i, current[1]) for i in range(1, abs(r[0])+1)])
+        elif r[1] > 0:
+            path.extend([(current[0], current[1] + i) for i in range(1, r[1]+1)])
+        elif r[1] < 0:
+            path.extend([(current[0], current[1] - i) for i in range(1, abs(r[1])+1)])
+
+        current = (current[0] + r[0], current[1] + r[1])
+
+    return path
+
+
+w1path = steps(wire1moves)
+w2path = steps(wire2moves)
+
+
+def distancetointersect(wirepath, intersect):
+    for i in range(len(wirepath)):
+        if wirepath[i] == intersect:
+            return i+1
+
+traveldist = [distancetointersect(w1path, i) + distancetointersect(w2path, i) for i in intersects]
+print(sorted(traveldist)) # min is 28580!
