@@ -27,12 +27,32 @@ def positions(moves):
 w1coords = positions(wire1moves)
 w2coords = positions(wire2moves)
 
-print(w1coords, w2coords)
+def coordpairs(coords):
+    return [(coords[i], coords[i+1]) for i in range(len(coords) - 1)]
 
-def intersects(w1, w2):
-    crosses = []
-    for i in range(len(w1) - 1):
-        for j in range(len(w2) - 1):
-            w1[i+1] - w1[i]
+w1routes = coordpairs(w1coords)
+w2routes = coordpairs(w2coords)
 
-    return crosses
+def intersect(routepairs):
+    first = sorted(routepairs[0])
+    if first[0][1] == first[1][1]:
+        hor = first
+        ver = sorted(routepairs[1])
+    else:
+        hor = sorted(routepairs[1])
+        ver = first
+    if hor[0][0] <= ver[0][0] <= hor[1][0] and ver[0][1] <= hor[0][1] <= ver[1][1]:
+        return (ver[0][0], hor[0][1])
+
+intersects = []
+for w1r in w1routes:
+    for w2r in w2routes:
+        point = intersect((w1r, w2r))
+        if point != None:
+            intersects.append(point)
+
+print(intersects)
+
+# Manhattan distance
+distances = [abs(i[0]) + abs(i[1]) for i in intersects]
+print(min(distances)) # 248!!!
